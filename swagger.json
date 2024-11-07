@@ -1,0 +1,157 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Bicycle Insurance API",
+    "description": "API for calculating premiums for bicycle insurance policies",
+    "version": "1.0"
+  },
+  "basePath": "/api/v1",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/calculate": {
+      "post": {
+        "summary": "Calculate premiums for bicycle insurance policies",
+        "description": "Given a list of bicycle objects, this API will calculate the total premium associated with each bicycle. \n",
+        "parameters": [
+          {
+            "name": "bicycles",
+            "in": "body",
+            "required": true,
+            "description": "List of bicycle objects for which to calculate premiums",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "bicycles": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Bicycle"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully calculated premiums and risks for bicycle policies",
+            "schema": {
+              "$ref": "#/definitions/PremiumResponse"
+            }
+          },
+          "400": {
+            "description": "Invalid input provided"
+          },
+          "500": {
+            "description": "Server error occurred"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Bicycle": {
+      "type": "object",
+      "required": [
+        "make",
+        "model",
+        "manufactureYear",
+        "sumInsured"
+      ],
+      "properties": {
+        "make": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "coverage": {
+          "type": "string",
+          "enum": [
+            "STANDARD",
+            "EXTRA"
+          ],
+          "default": "STANDARD"
+        },
+        "manufactureYear": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sumInsured": {
+          "type": "number",
+          "format": "double"
+        },
+        "risks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "THEFT"
+          ]
+        }
+      }
+    },
+    "PremiumResponse": {
+      "type": "object",
+      "properties": {
+        "objects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "coverageType": {
+                "type": "string",
+                "enum": ["STANDARD", "EXTRA"]
+              },
+              "risks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "riskType": {
+                      "type": "string"
+                    },
+                    "sumInsured": {
+                      "type": "number",
+                      "format": "double"
+                    },
+                    "premium": {
+                      "type": "number",
+                      "format": "double"
+                    }
+                  }
+                }
+              },
+              "sumInsured": {
+                "type": "number",
+                "format": "double"
+              },
+              "premium": {
+                "type": "number",
+                "format": "double"
+              }
+            }
+          }
+        },
+        "premium": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    }
+  }
+}
